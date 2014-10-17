@@ -1,14 +1,12 @@
-FROM yanninho/ssh 
+FROM debian 
 
 MAINTAINER	Yannick Saint Martino 
 
-RUN groupadd gituser && useradd gituser -s /bin/bash -m -g gituser -G gituser && adduser gituser sudo
-RUN echo 'gituser:gituser' |chpasswd
+RUN apt-get update && apt-get -y install git sudo && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /home/gituser/workspace
+echo '\n# git config\ngit config --global user.name "$GIT_CONFIG_USERNAME"\ngit config --global user.email "$GIT_CONFIG_EMAIL"' >> /root/.bashrc
 
-RUN apt-get -y install git sudo 
+VOLUME ["/workspace"]
+WORKDIR /workspace
 
-VOLUME ["/home/gituser/workspace"]
-
-
+CMD git status
